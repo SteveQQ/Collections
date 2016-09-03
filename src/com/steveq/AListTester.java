@@ -9,10 +9,7 @@ public class AListTester {
     public static void main(String[] args){
         AList<Integer> testList = new AList<>();
         System.out.println(testList.size());
-        System.out.println(testList.dataArray.length);
         System.out.println(testList);
-        System.out.println(testList);
-        System.out.println(testList.dataArray.length);
         testList.add(1);
         testList.add(2);
         testList.add(4);
@@ -21,16 +18,21 @@ public class AListTester {
         ar.add("a");
         ar.add("b");
         ar.add("c");
+        ar.add("d");
+        ar.add("e");
+        ar.add("f");
         System.out.println(ar);
         AList<String> al = new AList<>(3);
         System.out.println(al.size());
-        System.out.println(al.dataArray.length);
         al.add("x");
         al.add("y");
         al.add("z");
         System.out.println(al);
         AList<String> als = new AList<>(ar);
         System.out.println(als);
+        als.remove(5);
+        System.out.println(als);
+        System.out.println(als.dataArray.length);
 
 
 

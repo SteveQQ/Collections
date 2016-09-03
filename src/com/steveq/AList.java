@@ -14,8 +14,9 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
     //Object[] DEFAULT_CAP = new Object[]{2}; ----> [2] - array with initial value
     //Object[] DEFAULT_CAP = new Object[3]; ----> [null, null, null] - array with initial size
     private static final Object[] DEFAULT_CAP = {};
-    private Object[] dataArray;
+    public Object[] dataArray;
 
+    //----- CONSTRUCTORS -----//
     public AList(Integer capacity) throws IllegalArgumentException{
         if(capacity == 0){
             this.dataArray = DEFAULT_CAP;
@@ -38,6 +39,10 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
         }
     }
 
+    //----- CONSTRUCTORS -----//
+
+
+    //----- EXPOSED METHODS -----//
     @Override
     public E get(int index){
         if(index >= 0){
@@ -71,6 +76,18 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
         return true;
     }
 
+    @Override
+    public E remove(int index){
+        int moved = this.size() - index - 1;
+        E removed = (E)this.dataArray[index];
+        System.arraycopy(this.dataArray, index + 1, this.dataArray, index, moved);
+        dataArray = Arrays.copyOf(dataArray, size() - 1);
+        return removed;
+    }
+    //----- EXPOSED METHODS -----//
+
+
+    //----- HELPER METHODS -----//
     private boolean stretchArray(){
         if(this.dataArray.length == 0){
             dataArray = Arrays.copyOf(dataArray, 1);
@@ -83,5 +100,6 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
     private boolean isPlaceForNext(){
         return this.dataArray.length > this.size();
     }
+    //----- HELPER METHODS -----//
 
 }
