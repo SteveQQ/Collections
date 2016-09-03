@@ -87,7 +87,7 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
 
     public boolean remove(Object object){
         for(int i=0; i < this.size(); i++){
-            if(this.dataArray[i] == object){
+            if(this.dataArray[i].equals(object)){
                 this.remove(i);
                 return true;
             }
@@ -107,11 +107,21 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
     public boolean contains(Object object){
         Iterator iterator = this.iterator();
         while(iterator.hasNext()){
-            if(iterator.next() == object){
+            if(iterator.next().equals(object)){
                 return true;
             }
         }
         return false;
+    }
+
+    @Override
+    public int indexOf(Object object){
+        for(int i=0; i<this.size(); i++){
+            if(this.dataArray[i].equals(object)){
+                return i;
+            }
+        }
+        return -1;
     }
     //----- EXPOSED METHODS -----//
 
