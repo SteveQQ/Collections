@@ -84,6 +84,16 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
         dataArray = Arrays.copyOf(dataArray, size() - 1);
         return removed;
     }
+
+    public boolean remove(Object object){
+        for(int i=0; i < this.size(); i++){
+            if(this.dataArray[i] == object){
+                this.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
     //----- EXPOSED METHODS -----//
 
 
