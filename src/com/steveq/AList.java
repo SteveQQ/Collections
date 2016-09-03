@@ -102,6 +102,17 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
             this.remove(0);
         }
     }
+
+    @Override
+    public boolean contains(Object object){
+        Iterator iterator = this.iterator();
+        while(iterator.hasNext()){
+            if(iterator.next() == object){
+                return true;
+            }
+        }
+        return false;
+    }
     //----- EXPOSED METHODS -----//
 
 

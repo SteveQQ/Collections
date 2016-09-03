@@ -33,6 +33,7 @@ public class AListTester {
         als.remove(5);
         System.out.println(als);
         System.out.println(als.dataArray.length);
+        System.out.println(als.contains("z"));
         als.remove("c");
         System.out.println(als);
         als.clear();
