@@ -3,6 +3,7 @@ package com.steveq;
 import java.util.AbstractList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by SteveQ on 2016-09-03.
@@ -13,7 +14,7 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
     //Object[] DEFAULT_CAP = new Object[]{2}; ----> [2] - array with initial value
     //Object[] DEFAULT_CAP = new Object[3]; ----> [null, null, null] - array with initial size
     private static final Object[] DEFAULT_CAP = {};
-    public Object[] dataArray;
+    private Object[] dataArray;
 
     public AList(Integer capacity) throws IllegalArgumentException{
         if(capacity == 0){
@@ -27,6 +28,14 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
 
     public AList(){
         this.dataArray = DEFAULT_CAP;
+    }
+
+    public AList(Collection<? extends E> collection){
+        this.dataArray = DEFAULT_CAP;
+        Iterator iterator = collection.iterator();
+        while (iterator.hasNext()){
+            this.add((E)iterator.next());
+        }
     }
 
     @Override
@@ -62,7 +71,7 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
         return true;
     }
 
-    public boolean stretchArray(){
+    private boolean stretchArray(){
         if(this.dataArray.length == 0){
             dataArray = Arrays.copyOf(dataArray, 1);
         } else {
@@ -71,7 +80,7 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
         return true;
     }
 
-    public boolean isPlaceForNext(){
+    private boolean isPlaceForNext(){
         return this.dataArray.length > this.size();
     }
 
