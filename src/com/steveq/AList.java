@@ -44,11 +44,11 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
 
     //----- EXPOSED METHODS -----//
     @Override
-    public E get(int index){
-        if(index >= 0){
+    public E get(int index) throws IllegalArgumentException{
+        if(index >= 0 && index < this.size()){
             return (E)dataArray[index];
         } else {
-            return null;
+            throw new IllegalArgumentException("Wrong index");
         }
     }
 
