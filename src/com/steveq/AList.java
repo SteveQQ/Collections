@@ -79,7 +79,7 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
     @Override
     public E remove(int index){
         int moved = this.size() - index - 1;
-        E removed = (E)this.dataArray[index];
+        E removed = (E) this.dataArray[index];
         System.arraycopy(this.dataArray, index + 1, this.dataArray, index, moved);
         dataArray = Arrays.copyOf(dataArray, size() - 1);
         return removed;
@@ -93,6 +93,14 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
             }
         }
         return false;
+    }
+
+    @Override
+    public void clear(){
+        int iterate = this.size();
+        for(int i=0; i < iterate; i++){
+            this.remove(0);
+        }
     }
     //----- EXPOSED METHODS -----//
 

@@ -35,9 +35,8 @@ public class AListTester {
         System.out.println(als.dataArray.length);
         als.remove("c");
         System.out.println(als);
-        als.remove("a");
+        als.clear();
         System.out.println(als);
-
 
 
 
