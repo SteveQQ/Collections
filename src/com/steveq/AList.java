@@ -1,6 +1,7 @@
 package com.steveq;
 
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -8,34 +9,70 @@ import java.util.Collection;
  */
 public class AList<E> extends AbstractList<E> implements Collection<E>{
     //Other possibilities to declare array:
-    //Object[] DEFAULT_SIZE = new Object[]{}; ----> [] - 0 length array
-    //Object[] DEFAULT_SIZE = new Object[]{2}; ----> [2] - array with initial value
-    //Object[] DEFAULT_SIZE = new Object[3]; ----> [null, null, null] - array with initial size
-    private static final Object[] DEFAULT_SIZE = {};
-    private Object[] dataArray;
+    //Object[] DEFAULT_CAP = new Object[]{}; ----> [] - 0 length array
+    //Object[] DEFAULT_CAP = new Object[]{2}; ----> [2] - array with initial value
+    //Object[] DEFAULT_CAP = new Object[3]; ----> [null, null, null] - array with initial size
+    private static final Object[] DEFAULT_CAP = {};
+    public Object[] dataArray;
 
-    public AList(Integer size) throws IllegalArgumentException{
-        if(size == 0){
-            dataArray = DEFAULT_SIZE;
-        } else if(size > 0){
-            dataArray = new Object[size];
+    public AList(Integer capacity) throws IllegalArgumentException{
+        if(capacity == 0){
+            this.dataArray = DEFAULT_CAP;
+        } else if(capacity > 0){
+            this.dataArray = new Object[capacity];
         } else {
             throw new IllegalArgumentException("Size cannot be less than zero");
         }
     }
 
     public AList(){
-        dataArray = DEFAULT_SIZE;
+        this.dataArray = DEFAULT_CAP;
     }
 
     @Override
     public E get(int index){
-        return (E)dataArray[index];
+        if(index >= 0){
+            return (E)dataArray[index];
+        } else {
+            return null;
+        }
     }
 
     @Override
     public int size(){
-        return dataArray.length;
+        int size = 0;
+        for(Object element : dataArray){
+            if(element != null){
+                size++;
+            } else {
+                break;
+            }
+        }
+        return size;
+    }
+
+    @Override
+    public boolean add(E element){
+        if(isPlaceForNext()){
+            dataArray[this.size()] = element;
+        } else {
+            stretchArray();
+            dataArray[this.size()] = element;
+        }
+        return true;
+    }
+
+    public boolean stretchArray(){
+        if(this.dataArray.length == 0){
+            dataArray = Arrays.copyOf(dataArray, 1);
+        } else {
+            dataArray = Arrays.copyOf(dataArray, (int) Math.ceil(this.dataArray.length * 1.5));
+        }
+        return true;
+    }
+
+    public boolean isPlaceForNext(){
+        return this.dataArray.length > this.size();
     }
 
 }
