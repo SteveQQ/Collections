@@ -1,9 +1,6 @@
 package com.steveq;
 
-import java.util.AbstractList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
+import java.util.*;
 
 /**
  * Created by SteveQ on 2016-09-03.
@@ -122,6 +119,25 @@ public class AList<E> extends AbstractList<E> implements Collection<E>{
             }
         }
         return -1;
+    }
+
+    @Override
+    public Iterator<E> iterator(){
+        return new Iterator<E>() {
+            private int cursor = 0;
+            @Override
+            public boolean hasNext() {
+                return cursor < AList.this.dataArray.length;
+            }
+
+            @Override
+            public E next() throws NoSuchElementException {
+                if(this.hasNext()){
+                    return AList.this.get(cursor++);
+                }
+                throw new NoSuchElementException();
+            }
+        };
     }
     //----- EXPOSED METHODS -----//
 
