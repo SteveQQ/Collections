@@ -13,16 +13,24 @@ public class LinListTester {
         lList.addFirst("b");
         lList.addFirst("a");
         System.out.println(lList.size());
+        ListIterator<String> iterator = lList.listIterator();
         System.out.println(lList);
-        ListIterator<String> lit = lList.listIterator(2);
-        System.out.println(lit.previous());
-        System.out.println(lit.next());
-        System.out.println(lit.previous());
-        System.out.println(lit.previous());
-        System.out.println(lit.next());
-        System.out.println(lit.next());
-        System.out.println(lit.next());
-        System.out.println(lit.next());
-
+        System.out.println(iterator.nextIndex());
+        iterator.add("x");
+        System.out.println(lList);
+        System.out.println(iterator.previous());
+        System.out.println(iterator.previous());
+        System.out.println(iterator.next());
+        iterator.set("c");
+        System.out.println(lList);
+        System.out.println(iterator.next());
+        iterator.set("c");
+        System.out.println(lList);
+        System.out.println(iterator.previous());
+        iterator.set("d");
+        System.out.println(lList);
+        System.out.println(iterator.previous());
+        iterator.set("d");
+        System.out.println(lList);
     }
 }

@@ -56,6 +56,7 @@ public class LinList<E> extends AbstractSequentialList<E>{
 
         private Node nextNode;
         private Node prevNode;
+        private Node returnedNode;
         private int mIndex;
 
         public listIterator(int index) throws IndexOutOfBoundsException{
@@ -80,26 +81,36 @@ public class LinList<E> extends AbstractSequentialList<E>{
         }
 
         public E next(){
-            mIndex++;
-            E data = nextNode.mData;
-            prevNode = nextNode;
-            nextNode = nextNode.mNextNode;
-            return data;
+            if(hasNext()) {
+                mIndex++;
+                E data = nextNode.mData;
+                prevNode = nextNode;
+                nextNode = nextNode.mNextNode;
+                returnedNode = prevNode;
+                return data;
+            } else {
+                return null;
+            }
         }
 
         public E previous(){
-            mIndex--;
-            E data = prevNode.mData;
-            nextNode = prevNode;
-            prevNode = prevNode.mPrevNode;
-            return data;
+            if(hasPrevious()){
+                mIndex--;
+                E data = prevNode.mData;
+                nextNode = prevNode;
+                prevNode = prevNode.mPrevNode;
+                returnedNode = nextNode;
+                return data;
+            }
+            return null;
         }
 
         public int nextIndex(){
-            if(mIndex < mSize){
+            if(mIndex >= mSize){
                 return size();
             } else {
-                return mIndex++;
+                int nInd = ++mIndex;
+                return nInd;
             }
         }
 
@@ -107,20 +118,36 @@ public class LinList<E> extends AbstractSequentialList<E>{
             if(mIndex == 0){
                 return size();
             } else {
-                return mIndex--;
+                int nInd = --mIndex;
+                return nInd;
             }
         }
 
         public void set(E e){
-
+            returnedNode.mData = e;
         }
 
         public void add(E e){
-
+            Node newNode = new Node(prevNode, e, nextNode);
+            if(hasPrevious()) {
+                prevNode.mNextNode = newNode;
+                nextNode.mPrevNode = newNode;
+                newNode.mPrevNode = nextNode.mPrevNode;
+                newNode.mNextNode = nextNode;
+            } else {
+                mFirstNode = newNode;
+                nextNode.mPrevNode = newNode;
+                newNode.mPrevNode = null;
+                newNode.mNextNode = nextNode;
+            }
+            prevNode = newNode;
+            mSize++;
+            modCount++;
         }
 
-        public void remove(){
-
+        public void remove() {
+            prevNode.mPrevNode.mNextNode = nextNode;
+            nextNode.mPrevNode = prevNode.mPrevNode;
         }
     }
 
