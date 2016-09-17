@@ -9,31 +9,18 @@ import java.util.ListIterator;
 public class LinListTester {
     public static void main(String[] args){
         LinList<String> lList = new LinList<>();
-        lList.addFirst("d");
-        lList.addFirst("c");
-        lList.addFirst("b");
         lList.addFirst("a");
-        ListIterator<String> iterator = lList.listIterator(2);
         System.out.println(lList);
-        System.out.println(lList.size());
-        System.out.println(iterator.previous());
-        iterator.remove();
+        lList.addFirst("b");
         System.out.println(lList);
-        System.out.println(lList.size());
-        iterator.remove();
+        lList.addFirst("c");
         System.out.println(lList);
-        System.out.println(lList.size());
-        System.out.println(iterator.next());
-        iterator.remove();
+        lList.add(1, "d");
         System.out.println(lList);
-        System.out.println(iterator.next());
-        System.out.println(lList.size());
-        iterator.remove();
+        lList.add(4, "e");
         System.out.println(lList);
-        System.out.println(lList.size());
-        System.out.println(iterator.previous());
-        iterator.remove();
-        System.out.println(lList);
-        System.out.println(lList.size());
+        ListIterator<String> it = lList.listIterator();
+        System.out.println(it.hasNext());
+        System.out.println(it.hasPrevious());
     }
 }

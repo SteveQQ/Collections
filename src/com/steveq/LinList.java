@@ -16,10 +16,12 @@ public class LinList<E> extends AbstractSequentialList<E>{
     Node mLastNode;
     private int mSize;
     private int modCount;
+    private ListIterator<E> mIterator;
 
     //-----CONSTRUCTORS-----//
     public LinList(){
         Collections.emptyList();
+        mIterator = listIterator();
     }
     //-----CONSTRUCTORS-----//
 
@@ -62,6 +64,7 @@ public class LinList<E> extends AbstractSequentialList<E>{
         public listIterator(int index) throws IndexOutOfBoundsException{
             nextNode = mFirstNode;
             if(index == 0){
+                prevNode = null;
                 nextNode = mFirstNode;
             } else if(index < mSize){
                 while(nextIndex() < index+1){
@@ -129,18 +132,31 @@ public class LinList<E> extends AbstractSequentialList<E>{
 
         public void add(E e){
             Node newNode = new Node(prevNode, e, nextNode);
-            if(hasPrevious()) {
+            if(hasPrevious() && hasNext()) {
+                prevNode = newNode;
                 prevNode.mNextNode = newNode;
                 nextNode.mPrevNode = newNode;
-                newNode.mPrevNode = nextNode.mPrevNode;
+                newNode.mPrevNode = prevNode;
                 newNode.mNextNode = nextNode;
+            } else if(mSize == 0){
+                prevNode = newNode;
+                mFirstNode = newNode;
+                mLastNode = newNode;
+                newNode.mPrevNode = null;
+                newNode.mNextNode = null;
+            } else if(!hasNext()){
+                prevNode.mNextNode = newNode;
+                newNode.mPrevNode = prevNode;
+                newNode.mNextNode = null;
+                prevNode = newNode;
+                nextNode = null;
             } else {
+                prevNode = newNode;
                 mFirstNode = newNode;
                 nextNode.mPrevNode = newNode;
                 newNode.mPrevNode = null;
                 newNode.mNextNode = nextNode;
             }
-            prevNode = newNode;
             mSize++;
             modCount++;
         }
@@ -184,16 +200,36 @@ public class LinList<E> extends AbstractSequentialList<E>{
     }
 
     public void addFirst(E element){
-        Node head = mFirstNode;
-        Node newNode = new Node(null, element, mFirstNode);
-        mFirstNode = newNode;
-        if(head == null){
-            mLastNode = newNode;
-        } else {
-            head.mPrevNode = newNode;
+        ListIterator<E> it = listIterator();
+        it.add(element);
+    }
+
+    public void addLast(E element){
+        ListIterator<E> it = listIterator();
+        while (it.nextIndex() != mSize) {
+            it.next();
         }
-        mSize++;
-        modCount++;
+        it.next();
+        it.add(element);
+    }
+
+    public boolean add(E element){
+        addLast(element);
+        return true;
+    }
+
+    public void add(int index, E element) throws IndexOutOfBoundsException{
+        if(index < mSize && index >=0) {
+            ListIterator<E> it = listIterator();
+            while (it.nextIndex() < index + 1) {
+                it.next();
+            }
+            it.add(element);
+        } else if(index == mSize){
+            addLast(element);
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
     }
     //-----METHODS-----//
 
