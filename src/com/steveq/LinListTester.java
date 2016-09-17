@@ -9,28 +9,31 @@ import java.util.ListIterator;
 public class LinListTester {
     public static void main(String[] args){
         LinList<String> lList = new LinList<>();
+        lList.addFirst("d");
         lList.addFirst("c");
         lList.addFirst("b");
         lList.addFirst("a");
+        ListIterator<String> iterator = lList.listIterator(2);
+        System.out.println(lList);
         System.out.println(lList.size());
-        ListIterator<String> iterator = lList.listIterator();
-        System.out.println(lList);
-        System.out.println(iterator.nextIndex());
-        iterator.add("x");
-        System.out.println(lList);
         System.out.println(iterator.previous());
-        System.out.println(iterator.previous());
+        iterator.remove();
+        System.out.println(lList);
+        System.out.println(lList.size());
+        iterator.remove();
+        System.out.println(lList);
+        System.out.println(lList.size());
         System.out.println(iterator.next());
-        iterator.set("c");
+        iterator.remove();
         System.out.println(lList);
         System.out.println(iterator.next());
-        iterator.set("c");
+        System.out.println(lList.size());
+        iterator.remove();
         System.out.println(lList);
+        System.out.println(lList.size());
         System.out.println(iterator.previous());
-        iterator.set("d");
+        iterator.remove();
         System.out.println(lList);
-        System.out.println(iterator.previous());
-        iterator.set("d");
-        System.out.println(lList);
+        System.out.println(lList.size());
     }
 }
