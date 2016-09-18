@@ -29,11 +29,8 @@ public class LinListTester {
         System.out.println(lList);
         System.out.println(lList.removeLast());
         System.out.println(lList);
-        System.out.println(lList.remove("d"));
-        System.out.println(lList);
-        System.out.println(lList.remove("a"));
-        System.out.println(lList);
-        System.out.println(lList.remove("b"));
-        System.out.println(lList);
+        System.out.println(lList.get(0));
+        System.out.println(lList.getLast());
+        System.out.println(lList.getFirst());
     }
 }

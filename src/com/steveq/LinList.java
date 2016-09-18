@@ -269,6 +269,25 @@ public class LinList<E> extends AbstractSequentialList<E>{
             throw new IndexOutOfBoundsException();
         }
     }
+
+    public E getFirst(){
+        ListIterator<E> it = listIterator();
+        return it.next();
+    }
+
+    public E getLast(){
+        ListIterator<E> it = listIterator(mSize);
+        return it.previous();
+    }
+
+    public E get(int index) throws IndexOutOfBoundsException{
+        if(index < mSize && index >= 0){
+            ListIterator<E> it = listIterator(index);
+            return it.next();
+        } else {
+            throw new IndexOutOfBoundsException();
+        }
+    }
     //-----METHODS-----//
 
 }
