@@ -1,6 +1,7 @@
 package com.steveq;
 
 
+import java.lang.reflect.Array;
 import java.util.AbstractSequentialList;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,13 +63,16 @@ public class LinList<E> extends AbstractSequentialList<E>{
         private int mIndex;
 
         public listIterator(int index) throws IndexOutOfBoundsException{
-            nextNode = mFirstNode;
-            if(index == 0){
-                prevNode = null;
+            if(index <= mSize/2){
                 nextNode = mFirstNode;
-            } else if(index <= mSize){
                 while(mIndex < index){
                     next();
+                }
+            } else if(index > mSize/2){
+                prevNode = mLastNode;
+                mIndex = mSize;
+                while(mIndex > index){
+                    previous();
                 }
             } else {
                 throw new IndexOutOfBoundsException("You choose too big index");
