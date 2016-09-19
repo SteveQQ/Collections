@@ -1,5 +1,6 @@
 package com.steveq;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -8,32 +9,13 @@ import java.util.ListIterator;
  */
 public class LinListTester {
     public static void main(String[] args){
+        ArrayList<String> tar = new ArrayList<>();
+        tar.add("a");
+        tar.add("b");
+        tar.add("c");
+        System.out.println(tar);
         LinList<String> lList = new LinList<>();
-        lList.addFirst("a");
+        lList.addAll(tar);
         System.out.println(lList);
-        lList.addFirst("b");
-        System.out.println(lList);
-        lList.addFirst("c");
-        System.out.println(lList);
-        lList.add(2, "d");
-        System.out.println(lList);
-        lList.add(4, "e");
-        System.out.println(lList);
-        lList.addLast("f");
-        System.out.println(lList);
-        ListIterator<String> it = lList.listIterator();
-        System.out.println(it.next());
-        it.remove();
-        System.out.println(lList);
-        ListIterator<String> it2 = lList.listIterator(2);
-        System.out.println(it2.next());
-        System.out.println(lList.contains("z"));
-        System.out.println(it.next());
-        it.remove();
-        System.out.println(it.next());
-        System.out.println(lList);
-        lList.clear();
-        System.out.println(lList);
-
     }
 }

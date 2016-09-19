@@ -13,16 +13,14 @@ import java.util.ListIterator;
 
 public class LinList<E> extends AbstractSequentialList<E>{
 
-    Node mFirstNode;
-    Node mLastNode;
+    private Node mFirstNode;
+    private Node mLastNode;
     private int mSize;
     private int modCount;
-    private ListIterator<E> mIterator;
 
     //-----CONSTRUCTORS-----//
     public LinList(){
         Collections.emptyList();
-        mIterator = listIterator();
     }
     //-----CONSTRUCTORS-----//
 
@@ -192,7 +190,7 @@ public class LinList<E> extends AbstractSequentialList<E>{
                 returnedNode = null;
                 mSize--;
                 mIndex--;
-                modCount++;
+                modCount--;
             }
         }
     }
@@ -310,6 +308,13 @@ public class LinList<E> extends AbstractSequentialList<E>{
         } else {
             throw new IndexOutOfBoundsException();
         }
+    }
+
+    public boolean addAll(Collection<? extends E> col){
+        for(E element : col){
+            addLast(element);
+        }
+        return true;
     }
     //-----METHODS-----//
 
