@@ -208,6 +208,25 @@ public class LinList<E> extends AbstractSequentialList<E>{
         return mSize == 0;
     }
 
+    public boolean contains(Object o){
+        E element = (E)o;
+        ListIterator<E> it = listIterator();
+        while(it.hasNext()) {
+            if (it.next().equals(element)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void clear(){
+        ListIterator<E> it = listIterator();
+        while(it.hasNext()){
+            it.next();
+            it.remove();
+        }
+    }
+
     public void addFirst(E element){
         ListIterator<E> it = listIterator();
         it.add(element);

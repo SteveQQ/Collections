@@ -27,5 +27,13 @@ public class LinListTester {
         System.out.println(lList);
         ListIterator<String> it2 = lList.listIterator(2);
         System.out.println(it2.next());
+        System.out.println(lList.contains("z"));
+        System.out.println(it.next());
+        it.remove();
+        System.out.println(it.next());
+        System.out.println(lList);
+        lList.clear();
+        System.out.println(lList);
+
     }
 }
