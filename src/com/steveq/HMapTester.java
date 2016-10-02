@@ -27,6 +27,7 @@ public class HMapTester{
         System.out.println(hm.put(4, "d"));
         System.out.println(hm.entrySet());
         System.out.println(hm.containsKey(5));
+        System.out.println(hm.containsValue(3));
     }
 
 }

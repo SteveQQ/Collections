@@ -217,4 +217,20 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         return false;
     }
 
+
+    @SuppressWarnings("unchecked")
+    public boolean containsValue(Object value){
+
+        for(LinkedList<myEntry<K,V>> en : hashtable){
+            if(en != null) {
+                ListIterator<myEntry<K, V>> it = en.listIterator();
+                while (it.hasNext()) {
+                    if (it.next().getValue().equals(value)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
