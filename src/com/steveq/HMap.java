@@ -1,27 +1,25 @@
 package com.steveq;
 
-import java.util.AbstractMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by SteveQ on 2016-10-01.
  */
 public class HMap<K,V> extends AbstractMap<K,V> {
 
-     myEntry<K,V>[] mEntries;
-    private final int INITIAL_CAP = 16;
+    private final int INITIAL_CAP = 4;
     private final double LOAD_FACTOR = 0.75;
 
+    LinkedList<myEntry<K,V>>[] hashtable;
+
+    @SuppressWarnings("unchecked")
     public HMap() {
-        mEntries = new myEntry[INITIAL_CAP];
+        hashtable = new LinkedList[INITIAL_CAP];
     }
 
     class myEntry<K,V> implements Map.Entry<K,V>{
         private K mKey;
         private V mValue;
-        private Map.Entry next;
 
         public myEntry(K key, V value) {
             mKey = key;
@@ -62,13 +60,15 @@ public class HMap<K,V> extends AbstractMap<K,V> {
 
             myEntry<?, ?> myEntry = (myEntry<?, ?>) o;
 
-            if (mKey != null ? !mKey.equals(myEntry.mKey) : myEntry.mKey != null) return false;
-            return mValue != null ? mValue.equals(myEntry.mValue) : myEntry.mValue == null;
+            return mKey != null ? mKey.equals(myEntry.mKey) : myEntry.mKey == null;
 
         }
 
         @Override
         public int hashCode() {
+            if(Integer.parseInt(mKey.toString()) >= 3){
+                return 5;
+            }
             int hash = 17;
             hash = 31 * hash + (mKey != null ? mKey.hashCode() : 0);
             return hash;
@@ -76,12 +76,17 @@ public class HMap<K,V> extends AbstractMap<K,V> {
     }
 
     @Override
-    public Set<Map.Entry<K,V>> entrySet(){
-        Set<Map.Entry<K,V>> set = new HashSet<>();
-        for(myEntry en : mEntries){
-            if(en != null){
-                set.add(en);
-
+    public Set<Entry<K,V>> entrySet(){
+        Set<Entry<K,V>> set = new HashSet<>();
+        myEntry<K,V> nextEntry = null;
+        for(LinkedList<myEntry<K,V>> bucket : hashtable){
+            if(bucket != null) {
+                ListIterator<myEntry<K, V>> it = bucket.listIterator();
+                if (bucket != null) {
+                    while (it.hasNext()) {
+                        set.add(it.next());
+                    }
+                }
             }
         }
         return set;
@@ -89,8 +94,13 @@ public class HMap<K,V> extends AbstractMap<K,V> {
 
     public Set<K> keySet() {
         Set<K> set = new HashSet<>();
-        for(int i=0; i < mEntries.length; i++){
-            set.add(mEntries[i].getKey());
+        for(LinkedList<myEntry<K,V>> bucket : hashtable) {
+            ListIterator<myEntry<K,V>> it = bucket.listIterator();
+            if(bucket != null){
+                while(it.hasNext()){
+                    set.add(it.next().getKey());
+                }
+            }
         }
         return set;
     }
@@ -98,34 +108,83 @@ public class HMap<K,V> extends AbstractMap<K,V> {
     @Override
     public V put(K key, V value){
 
-        if(entrySet().size() >= mEntries.length * LOAD_FACTOR){
-            reorganizeSet();
-        }
         myEntry<K,V> newEntry = new myEntry<>(key, value);
         int hash = newEntry.hashCode();
-        System.out.println(hash % mEntries.length);
-        mEntries[hash % mEntries.length] = newEntry;
+
+        LinkedList<myEntry<K, V>> hashedIndex;
+
+        if(getIndex(hash) >= hashtable.length) {
+            hashedIndex = null;
+        } else {
+            hashedIndex = hashtable[getIndex(hash)];
+        }
+
+        if(bucketsNumber() >= hashtable.length * LOAD_FACTOR){
+            reorganizeHashTable();
+        }
+
+        if(hashedIndex == null){
+            hashedIndex = new LinkedList<>();
+            hashedIndex.addFirst(newEntry);
+        } else {
+            ListIterator<myEntry<K,V>> it = hashedIndex.listIterator();
+            while(it.hasNext()){
+                myEntry<K,V> old = it.next();
+                if(newEntry.equals(old)){
+                    hashedIndex.set(hashedIndex.indexOf(it.previous()), newEntry);
+                    return old.getValue();
+                } else {
+                    hashedIndex.addFirst(newEntry);
+                    break;
+                }
+            }
+        }
+
+        hashtable[getIndex(hash)] = hashedIndex;
 
         return null;
+    }
+
+    private int bucketsNumber() {
+        int result = 0;
+        for(LinkedList<myEntry<K,V>> el : hashtable){
+            if(el != null){
+                result++;
+            }
+        }
+        return result;
+    }
+
+    private void reorganizeHashTable() {
+        LinkedList<myEntry<K,V>>[] newTable = new LinkedList[hashtable.length * 2];
+        for(int i=0; i < hashtable.length; i++){
+            newTable[i] = hashtable[i];
+        }
+        hashtable = newTable;
     }
 
 
     @Override
     public V get(Object key){
+
         myEntry<K,V> e = new myEntry<>((K)key, null);
         int hash = e.hashCode();
-        System.out.println(hash % mEntries.length);
-        V v =mEntries[hash % mEntries.length].getValue();
-        return v;
+
+        LinkedList<myEntry<K,V>> hashedIndex = hashtable[getIndex(hash)];
+
+        ListIterator<myEntry<K,V>> it = hashedIndex.listIterator();
+        while(it.hasNext()){
+            myEntry<K,V> next = it.next();
+            if(e.equals(next)){
+                return next.getValue();
+            }
+        }
+
+        return null;
     }
 
-    private void reorganizeSet() {
-        myEntry<K,V>[] newArray = new myEntry[mEntries.length*2];
-        myEntry<K,V> en = null;
-        for(Map.Entry<K, V> entry : entrySet())
-            en = new myEntry<>(entry.getKey(), entry.getValue());
-        int hash = en.hashCode();
-        newArray[hash % mEntries.length] = en;
+    private int getIndex(int hash) {
+        return hash % hashtable.length;
     }
 
     public boolean isEmpty(){
