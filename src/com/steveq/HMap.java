@@ -15,6 +15,9 @@ public class HMap<K,V> extends AbstractMap<K,V> {
     @SuppressWarnings("unchecked")
     public HMap() {
         hashtable = new LinkedList[INITIAL_CAP];
+        for(int i = 0; i < hashtable.length; i++){
+            hashtable[i] = new LinkedList<>();
+        }
     }
 
     class myEntry<K,V> implements Map.Entry<K,V>{
@@ -29,10 +32,6 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         @Override
         public K getKey() {
             return mKey;
-        }
-
-        public void setKey(K key) {
-            mKey = key;
         }
 
         @Override
@@ -78,7 +77,6 @@ public class HMap<K,V> extends AbstractMap<K,V> {
     @Override
     public Set<Entry<K,V>> entrySet(){
         Set<Entry<K,V>> set = new HashSet<>();
-        myEntry<K,V> nextEntry = null;
         for(LinkedList<myEntry<K,V>> bucket : hashtable){
             if(bucket != null) {
                 ListIterator<myEntry<K, V>> it = bucket.listIterator();
@@ -93,8 +91,8 @@ public class HMap<K,V> extends AbstractMap<K,V> {
     public Set<K> keySet() {
         Set<K> set = new HashSet<>();
         for(LinkedList<myEntry<K,V>> bucket : hashtable) {
-            ListIterator<myEntry<K,V>> it = bucket.listIterator();
             if(bucket != null){
+                ListIterator<myEntry<K,V>> it = bucket.listIterator();
                 while(it.hasNext()){
                     set.add(it.next().getKey());
                 }
@@ -109,19 +107,19 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         myEntry<K,V> newEntry = new myEntry<>(key, value);
         int hash = newEntry.hashCode();
 
-        LinkedList<myEntry<K, V>> bucket;
+        LinkedList<myEntry<K, V>> bucket = hashtable[getIndex(hash)];
 
-        if(getIndex(hash) >= hashtable.length) {
-            bucket = null;
-        } else {
-            bucket = hashtable[getIndex(hash)];
-        }
+//        if(getIndex(hash) >= hashtable.length) {
+//            bucket = null;
+//        } else {
+//            bucket = hashtable[getIndex(hash)];
+//        }
 
         if(bucketsNumber() >= hashtable.length * LOAD_FACTOR){
             reorganizeHashTable();
         }
 
-        if(bucket == null){
+        if(bucket.size() == 0){
             bucket = new LinkedList<>();
             bucket.addFirst(newEntry);
         } else {
@@ -192,7 +190,7 @@ public class HMap<K,V> extends AbstractMap<K,V> {
 
     public void clear(){
         for(int i=0; i < hashtable.length; i++){
-            hashtable[i] = null;
+            hashtable[i] = new LinkedList<>();
         }
     }
 
@@ -232,5 +230,27 @@ public class HMap<K,V> extends AbstractMap<K,V> {
             }
         }
         return false;
+    }
+
+    public int size(){
+        return entrySet().size();
+    }
+
+    public V remove(Object key){
+        myEntry<K,V> e = new myEntry<>((K)key, null);
+        int hash = e.hashCode();
+
+
+        LinkedList<myEntry<K,V>> bucket = hashtable[getIndex(hash)];
+
+        ListIterator<myEntry<K, V>> it = bucket.listIterator();
+        while (it.hasNext()) {
+            myEntry<K, V> next = it.next();
+            if (e.equals(next)) {
+                it.remove();
+                return next.getValue();
+            }
+        }
+        return null;
     }
 }

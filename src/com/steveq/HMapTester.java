@@ -28,6 +28,18 @@ public class HMapTester{
         System.out.println(hm.entrySet());
         System.out.println(hm.containsKey(5));
         System.out.println(hm.containsValue(3));
+        System.out.println(hm.keySet());
+        System.out.println(hm.size());
+        System.out.println(hm.remove(2));
+        System.out.println(hm.entrySet());
+        System.out.println(hm.remove(3));
+        System.out.println(hm.entrySet());
+        System.out.println(hm.put(3, "c"));
+        System.out.println(hm.entrySet());
+        System.out.println(hm.remove(1));
+        System.out.println(hm.entrySet());
+        System.out.println(hm.put(1, "c"));
+        System.out.println(hm.entrySet());
     }
 
 }
