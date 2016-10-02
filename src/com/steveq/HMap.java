@@ -66,9 +66,9 @@ public class HMap<K,V> extends AbstractMap<K,V> {
 
         @Override
         public int hashCode() {
-            if(Integer.parseInt(mKey.toString()) >= 3){
-                return 5;
-            }
+//            if(Integer.parseInt(mKey.toString()) >= 3){
+//                return 5;
+//            }
             int hash = 17;
             hash = 31 * hash + (mKey != null ? mKey.hashCode() : 0);
             return hash;
@@ -82,10 +82,8 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         for(LinkedList<myEntry<K,V>> bucket : hashtable){
             if(bucket != null) {
                 ListIterator<myEntry<K, V>> it = bucket.listIterator();
-                if (bucket != null) {
-                    while (it.hasNext()) {
-                        set.add(it.next());
-                    }
+                while (it.hasNext()) {
+                    set.add(it.next());
                 }
             }
         }
@@ -111,36 +109,36 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         myEntry<K,V> newEntry = new myEntry<>(key, value);
         int hash = newEntry.hashCode();
 
-        LinkedList<myEntry<K, V>> hashedIndex;
+        LinkedList<myEntry<K, V>> bucket;
 
         if(getIndex(hash) >= hashtable.length) {
-            hashedIndex = null;
+            bucket = null;
         } else {
-            hashedIndex = hashtable[getIndex(hash)];
+            bucket = hashtable[getIndex(hash)];
         }
 
         if(bucketsNumber() >= hashtable.length * LOAD_FACTOR){
             reorganizeHashTable();
         }
 
-        if(hashedIndex == null){
-            hashedIndex = new LinkedList<>();
-            hashedIndex.addFirst(newEntry);
+        if(bucket == null){
+            bucket = new LinkedList<>();
+            bucket.addFirst(newEntry);
         } else {
-            ListIterator<myEntry<K,V>> it = hashedIndex.listIterator();
+            ListIterator<myEntry<K,V>> it = bucket.listIterator();
             while(it.hasNext()){
                 myEntry<K,V> old = it.next();
                 if(newEntry.equals(old)){
-                    hashedIndex.set(hashedIndex.indexOf(it.previous()), newEntry);
+                    bucket.set(bucket.indexOf(it.previous()), newEntry);
                     return old.getValue();
                 } else {
-                    hashedIndex.addFirst(newEntry);
+                    bucket.addFirst(newEntry);
                     break;
                 }
             }
         }
 
-        hashtable[getIndex(hash)] = hashedIndex;
+        hashtable[getIndex(hash)] = bucket;
 
         return null;
     }
@@ -155,6 +153,7 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     private void reorganizeHashTable() {
         LinkedList<myEntry<K,V>>[] newTable = new LinkedList[hashtable.length * 2];
         for(int i=0; i < hashtable.length; i++){
@@ -170,9 +169,9 @@ public class HMap<K,V> extends AbstractMap<K,V> {
         myEntry<K,V> e = new myEntry<>((K)key, null);
         int hash = e.hashCode();
 
-        LinkedList<myEntry<K,V>> hashedIndex = hashtable[getIndex(hash)];
+        LinkedList<myEntry<K,V>> bucket = hashtable[getIndex(hash)];
 
-        ListIterator<myEntry<K,V>> it = hashedIndex.listIterator();
+        ListIterator<myEntry<K,V>> it = bucket.listIterator();
         while(it.hasNext()){
             myEntry<K,V> next = it.next();
             if(e.equals(next)){
@@ -189,6 +188,33 @@ public class HMap<K,V> extends AbstractMap<K,V> {
 
     public boolean isEmpty(){
         return entrySet().size() == 0;
+    }
+
+    public void clear(){
+        for(int i=0; i < hashtable.length; i++){
+            hashtable[i] = null;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public boolean containsKey(Object key){
+        myEntry<K,V> e = new myEntry<>((K)key, null);
+        int hash = e.hashCode();
+
+        LinkedList<myEntry<K,V>> bucket = hashtable[getIndex(hash)];
+
+        if(bucket != null) {
+            ListIterator<myEntry<K, V>> it = bucket.listIterator();
+            while (it.hasNext()) {
+                myEntry<K, V> next = it.next();
+                if (e.equals(next)) {
+                    return true;
+                }
+            }
+        } else {
+            return false;
+        }
+        return false;
     }
 
 }

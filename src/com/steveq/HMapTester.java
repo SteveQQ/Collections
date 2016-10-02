@@ -17,6 +17,16 @@ public class HMapTester{
         System.out.println(hm.entrySet());
         System.out.println(hm.hashtable.length);
         System.out.println(hm.get(4));
+        System.out.println(hm.isEmpty());
+        hm.clear();
+        System.out.println(hm.isEmpty());
+        System.out.println(hm.entrySet());
+        System.out.println(hm.put(1, "a"));
+        System.out.println(hm.put(2, "b"));
+        System.out.println(hm.put(3, "c"));
+        System.out.println(hm.put(4, "d"));
+        System.out.println(hm.entrySet());
+        System.out.println(hm.containsKey(5));
     }
 
 }
