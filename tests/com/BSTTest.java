@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 public class BSTTest {
 
     private BST<Integer> bst;
-    private int[] data = new int[]{5, 8, 10, 12, 18, 24, 27};
+    private int[] data = new int[]{10, 8, 12, 5, 24, 18, 27};
 
     @Before
     public void setUp() throws Exception {
@@ -32,7 +32,8 @@ public class BSTTest {
 
     @Test
     public void toArrayGivesElementsInAscendingOrder() throws Exception {
-        assertArrayEquals(data, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+        int[] test = new int[]{5, 8, 10, 12, 18, 24, 27};
+        assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
     }
 
     @Test
@@ -52,5 +53,57 @@ public class BSTTest {
         }
 
         it.next();
+    }
+
+    @Test
+    public void ReturnFalseIfElementIsNotPresentInBST() throws Exception {
+        assertEquals(false, bst.remove(99));
+    }
+
+    @Test
+    public void ReturnTrueIfElementRemovedFromBST() throws Exception {
+        assertEquals(true, bst.remove(5));
+    }
+
+    @Test
+    public void SizeDecreasedWhenLeafElementDeletedFromBST() throws Exception {
+        bst.remove(5);
+        assertEquals(data.length-1, bst.size());
+    }
+
+    @Test
+    public void SizeDecreasedWhenMidRootElementDeletedFromBST() throws Exception {
+        bst.remove(12);
+        assertEquals(data.length-1, bst.size());
+    }
+
+    @Test
+    public void SizeDecreasedWhenRootElementDeletedFromBST() throws Exception {
+        bst.remove(10);
+        assertEquals(data.length-1, bst.size());
+    }
+
+    @Test
+    public void OrderOfElementsIsCorrectAfterDeletingLeafFromBST() throws Exception {
+        bst.remove(18);
+        int[] test = new int[]{5,8,10,12,24,27};
+
+        assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+    }
+
+    @Test
+    public void OrderOfElementsIsCorrectAfterDeletingRootFromBST() throws Exception {
+        bst.remove(10);
+        int[] test = new int[]{5, 8, 12, 18, 24, 27};
+
+        assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+    }
+
+    @Test
+    public void OrdereOfElementsIsCorrectAfterDeletingMidRootFromBST() throws Exception {
+        bst.remove(24);
+        int[] test = new int[]{5, 8, 10, 12, 18, 27};
+
+        assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
     }
 }

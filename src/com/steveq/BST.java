@@ -18,10 +18,12 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
         private E data;
         private Node leftJoin;
         private Node rightJoin;
+        private Node parentJoin;
         private int subtreeSize;
 
-        public Node(E data) {
+        public Node(E data, Node parent) {
             this.data = data;
+            this.parentJoin = parent;
             this.leftJoin = null;
             this.rightJoin = null;
         }
@@ -48,6 +50,14 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
         public void setRightJoin(Node rightJoin) {
             this.rightJoin = rightJoin;
+        }
+
+        public Node getParentJoin() {
+            return parentJoin;
+        }
+
+        public void setParentJoin(Node parentJoin) {
+            this.parentJoin = parentJoin;
         }
 
         public int getSubtreeSize() {
@@ -117,7 +127,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
     @Override
     public boolean add(E e) {
         if(absRoot == null){
-            absRoot = new Node(e);
+            absRoot = new Node(e, null);
             numElements++;
             return true;
         } else {
@@ -125,7 +135,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
             while(true){           //until reach leaf
                 if (e.compareTo(curRoot.getData()) <= 0) {
                     if(curRoot.getLeftJoin() == null){          //empty LEFT slot found
-                        curRoot.setLeftJoin(new Node(e));
+                        curRoot.setLeftJoin(new Node(e, curRoot));
                         numElements++;
                         return true;
                     } else {
@@ -133,7 +143,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
                     }
                 } else {
                     if(curRoot.getRightJoin() == null){         //empty RIGHT slot found
-                        curRoot.setRightJoin(new Node(e));
+                        curRoot.setRightJoin(new Node(e, curRoot));
                         numElements++;
                         return true;
                     } else {
@@ -146,7 +156,50 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public boolean remove(Object o) {
-        return false;
+        E e = (E)o;
+        curRoot = absRoot;
+        while(true){           //until reach leaf
+            if(e.compareTo(curRoot.getData()) == 0){
+                if(curRoot.getLeftJoin() != null){
+                    curRoot.getLeftJoin().setRightJoin(curRoot.getRightJoin());
+                    if(curRoot.getParentJoin() != null) {
+                        if (curRoot.equals(curRoot.getParentJoin().getLeftJoin())) {
+                            curRoot.getParentJoin().setLeftJoin(curRoot.getLeftJoin());
+                        } else {
+                            curRoot.getParentJoin().setRightJoin(curRoot.getLeftJoin());
+                        }
+                    } else {
+                        absRoot = curRoot.getLeftJoin();
+                    }
+                    numElements--;
+                    return true;
+                } else {
+                    if(curRoot.getParentJoin() != null) {
+                        if (curRoot.getParentJoin().getLeftJoin().equals(curRoot)) {
+                            curRoot.getParentJoin().setLeftJoin(curRoot.getRightJoin());
+                        } else {
+                            curRoot.getParentJoin().setRightJoin(curRoot.getRightJoin());
+                        }
+                    } else {
+                        absRoot = curRoot.getRightJoin();
+                    }
+                    numElements--;
+                    return true;
+                }
+            } else if (e.compareTo(curRoot.getData()) <= 0) {
+                if(curRoot.getLeftJoin() == null){          //empty LEFT slot found
+                    return false;
+                } else {
+                    curRoot = curRoot.getLeftJoin();
+                }
+            } else {
+                if(curRoot.getRightJoin() == null){         //empty RIGHT slot found
+                    return false;
+                } else {
+                    curRoot = curRoot.getRightJoin();
+                }
+            }
+        }
     }
 
     @Override
