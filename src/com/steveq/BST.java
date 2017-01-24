@@ -71,16 +71,21 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     private class BSTIterator implements Iterator{
 
-        private int cursor;
+        private int cursor = 0;
+        private Object[] elements = toArray();
 
         @Override
         public boolean hasNext() {
-            return false;
+            return elements[cursor+1] != null;
         }
 
         @Override
         public Object next() {
-            return null;
+            if(elements[cursor] != null){
+                return elements[cursor++];
+            } else {
+                throw new ArrayIndexOutOfBoundsException();
+            }
         }
     }
 
@@ -101,18 +106,19 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public Iterator iterator() {
-        return null;
+        return new BSTIterator();
     }
 
     @Override
     public Object[] toArray() {
-        return traversePostorder(absRoot);
+        return traverseInOrder(absRoot);
     }
 
     @Override
     public boolean add(E e) {
         if(absRoot == null){
             absRoot = new Node(e);
+            numElements++;
             return true;
         } else {
             curRoot = absRoot;
@@ -120,6 +126,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
                 if (e.compareTo(curRoot.getData()) <= 0) {
                     if(curRoot.getLeftJoin() == null){          //empty LEFT slot found
                         curRoot.setLeftJoin(new Node(e));
+                        numElements++;
                         return true;
                     } else {
                         curRoot = curRoot.getLeftJoin();
@@ -127,6 +134,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
                 } else {
                     if(curRoot.getRightJoin() == null){         //empty RIGHT slot found
                         curRoot.setRightJoin(new Node(e));
+                        numElements++;
                         return true;
                     } else {
                         curRoot = curRoot.getRightJoin();
