@@ -106,7 +106,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        return traversePostorder(absRoot);
     }
 
     @Override
@@ -168,25 +168,56 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public Object[] toArray(Object[] a) {
-        return traverseInOrder(absRoot);
+        throw new UnsupportedOperationException();
     }
 
-    private Object[] traverseInOrder(Node root) {
+    private Object[] traverseInOrder(Node startRoot) {
         ArrayList<Object> result = new ArrayList<>();
-        if(root.getLeftJoin() != null){
-            result.addAll(new ArrayList<Object>(Arrays.asList(traverseInOrder(root.getLeftJoin()))));
+        if(startRoot.getLeftJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traverseInOrder(startRoot.getLeftJoin()))));
         }
-        result.add(root);
-        if(root.getRightJoin() != null){
-            result.addAll(new ArrayList<Object>(Arrays.asList(traverseInOrder(root.getRightJoin()))));
+        result.add(startRoot);
+        if(startRoot.getRightJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traverseInOrder(startRoot.getRightJoin()))));
         }
+        return result.toArray();
+    }
+
+    private Object[] traversePreorder(Node startRoot){
+        ArrayList<Object> result = new ArrayList<>();
+
+        result.add(startRoot);
+
+        if(startRoot.getLeftJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traversePreorder(startRoot.getLeftJoin()))));
+        }
+
+        if(startRoot.getRightJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traversePreorder(startRoot.getRightJoin()))));
+        }
+        return result.toArray();
+    }
+
+    private Object[] traversePostorder(Node startRoot){
+        ArrayList<Object> result = new ArrayList<>();
+
+        if(startRoot.getLeftJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traversePostorder(startRoot.getLeftJoin()))));
+        }
+
+        if(startRoot.getRightJoin() != null){
+            result.addAll(new ArrayList<Object>(Arrays.asList(traversePostorder(startRoot.getRightJoin()))));
+        }
+
+        result.add(startRoot);
+
         return result.toArray();
     }
 
     @Override
     public String toString() {
 
-        Object[] collection = traverseInOrder(absRoot);
+        Object[] collection = toArray();
         StringBuilder builder = new StringBuilder();
         builder.append("[");
 
