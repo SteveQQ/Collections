@@ -92,18 +92,38 @@ public class BSTTest {
     }
 
     @Test
-    public void OrderOfElementsIsCorrectAfterDeletingRootFromBST() throws Exception {
-        bst.remove(10);
-        int[] test = new int[]{5, 8, 12, 18, 24, 27};
+    public void OrderOfElementsIsCorrectAfterDeletingElementWithOneChild() throws Exception {
+        bst.remove(8);
+        int[] test = new int[]{5, 10, 12, 18, 24, 27};
 
         assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
     }
 
     @Test
-    public void OrdereOfElementsIsCorrectAfterDeletingMidRootFromBST() throws Exception {
+    public void OrderOfElementsIsCorrectAfterDeletingElementWithTwoChildren() throws Exception {
         bst.remove(24);
         int[] test = new int[]{5, 8, 10, 12, 18, 27};
 
         assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+    }
+
+    @Test
+    public void ReturnProperOutputWhenElementExistsInTree() throws Exception {
+        assertEquals(true, bst.contains(8));
+        assertEquals(false, bst.contains(99));
+    }
+
+    @Test
+    public void ReturnClosestRootForNotFoundElement() throws Exception {
+        BST.Node node = bst.findNode(22);
+        assertEquals(18, node.getData());
+    }
+
+    @Test
+    public void FindElementsWhenNoElementsInsideBST() throws Exception {
+        BST<Integer> bst2 = new BST<>();
+        BST.Node node = bst2.findNode(10);
+        assertEquals(null, node);
+
     }
 }

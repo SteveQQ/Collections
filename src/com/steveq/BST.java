@@ -111,6 +111,10 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public boolean contains(Object o) {
+        Node node = findNode((E)o);
+        if(node.getData().compareTo((E)o) == 0){
+            return true;
+        }
         return false;
     }
 
@@ -126,79 +130,149 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public boolean add(E e) {
-        if(absRoot == null){
+        Node placeHolder = findNode(e, absRoot);
+        if(placeHolder == null){
             absRoot = new Node(e, null);
             numElements++;
             return true;
+        }
+        if(placeHolder.getData().compareTo(e) == 0) {
+            if (placeHolder.getLeftJoin() != null) {
+                Node subPlaceHolder = findNode(e, placeHolder.getLeftJoin());
+                if (subPlaceHolder.getData().compareTo(e) <= 0){
+                    subPlaceHolder.setLeftJoin(new Node(e, subPlaceHolder));
+                    numElements++;
+                    return true;
+                } else{
+                    subPlaceHolder.setRightJoin(new Node(e, subPlaceHolder));
+                    numElements++;
+                    return true;
+                }
+            } else {
+                placeHolder.setLeftJoin(new Node(e, placeHolder));
+                numElements++;
+                return true;
+            }
         } else {
-            curRoot = absRoot;
-            while(true){           //until reach leaf
-                if (e.compareTo(curRoot.getData()) <= 0) {
-                    if(curRoot.getLeftJoin() == null){          //empty LEFT slot found
-                        curRoot.setLeftJoin(new Node(e, curRoot));
-                        numElements++;
-                        return true;
-                    } else {
+            if(e.compareTo(placeHolder.getData()) <= 0){
+                placeHolder.setLeftJoin(new Node(e, placeHolder));
+                numElements++;
+                return true;
+            } else{
+                placeHolder.setRightJoin(new Node(e, placeHolder));
+                numElements++;
+                return true;
+            }
+        }
+    }
+
+    public Node findNode(E e){
+        return findNode(e, absRoot);
+    }
+
+    private Node findNode(E e, Node root){
+        if(absRoot != null) {
+            curRoot = root;
+
+            while(true){
+                if(e.compareTo(curRoot.getData()) == 0){
+                    return curRoot;
+                } else if(e.compareTo(curRoot.getData()) < 0){
+                    if(curRoot.getLeftJoin() != null) {
                         curRoot = curRoot.getLeftJoin();
-                    }
-                } else {
-                    if(curRoot.getRightJoin() == null){         //empty RIGHT slot found
-                        curRoot.setRightJoin(new Node(e, curRoot));
-                        numElements++;
-                        return true;
                     } else {
+                        return curRoot;
+                    }
+                } else if(e.compareTo(curRoot.getData()) > 0){
+                    if(curRoot.getRightJoin() != null) {
                         curRoot = curRoot.getRightJoin();
+                    } else {
+                        return curRoot;
                     }
                 }
             }
         }
+        else {
+            return null;
+        }
+    }
+
+    private Node findMinimum(Node root){
+        Node curNode = root;
+        while(curNode.getLeftJoin() != null){
+            curNode = curNode.getLeftJoin();
+        }
+        return curNode;
+    }
+
+    private int getChildrenSide(Node node){
+        if(node.equals(node.getParentJoin().getLeftJoin()))return -1;
+            return 1;
+    }
+
+    private boolean removeWhenZeroChildren(Node nodeToRemove){
+        if(getChildrenSide(nodeToRemove) < 0){
+            nodeToRemove.getParentJoin().setLeftJoin(null);
+        } else {
+            nodeToRemove.getParentJoin().setRightJoin(null);
+        }
+        numElements--;
+        return true;
+    }
+
+    private boolean removeWhenOneChildren(Node nodeToRemove){
+        if(nodeToRemove.getLeftJoin() != null){
+            if(getChildrenSide(nodeToRemove) <= 0){
+                nodeToRemove.getParentJoin().setLeftJoin(nodeToRemove.getLeftJoin());
+            } else {
+                nodeToRemove.getParentJoin().setRightJoin(nodeToRemove.getLeftJoin());
+            }
+        } else {
+            if(getChildrenSide(nodeToRemove) <= 0){
+                nodeToRemove.getParentJoin().setLeftJoin(nodeToRemove.getRightJoin());
+            } else {
+                nodeToRemove.getParentJoin().setRightJoin(nodeToRemove.getRightJoin());
+            }
+        }
+        numElements--;
+        return true;
+    }
+
+    private boolean removeWhenTwoChildren(Node nodeToRemove){
+        Node replacementNode = findMinimum(nodeToRemove.getRightJoin());
+        nodeToRemove.setData(replacementNode.getData());
+        return removeWhenZeroChildren(replacementNode);
+    }
+
+    private int childrenNumber(Node root){
+        if(root.getLeftJoin() == null &&            //zero children case
+                root.getRightJoin() == null) return 0;
+        else if((root.getLeftJoin() == null && root.getRightJoin() != null) ||       //one children case
+                (root.getLeftJoin() != null && root.getRightJoin() == null)) return 1;
+        else return 2;
     }
 
     @Override
     public boolean remove(Object o) {
         E e = (E)o;
-        curRoot = absRoot;
-        while(true){           //until reach leaf
-            if(e.compareTo(curRoot.getData()) == 0){
-                if(curRoot.getLeftJoin() != null){
-                    curRoot.getLeftJoin().setRightJoin(curRoot.getRightJoin());
-                    if(curRoot.getParentJoin() != null) {
-                        if (curRoot.equals(curRoot.getParentJoin().getLeftJoin())) {
-                            curRoot.getParentJoin().setLeftJoin(curRoot.getLeftJoin());
-                        } else {
-                            curRoot.getParentJoin().setRightJoin(curRoot.getLeftJoin());
-                        }
-                    } else {
-                        absRoot = curRoot.getLeftJoin();
-                    }
-                    numElements--;
-                    return true;
-                } else {
-                    if(curRoot.getParentJoin() != null) {
-                        if (curRoot.getParentJoin().getLeftJoin().equals(curRoot)) {
-                            curRoot.getParentJoin().setLeftJoin(curRoot.getRightJoin());
-                        } else {
-                            curRoot.getParentJoin().setRightJoin(curRoot.getRightJoin());
-                        }
-                    } else {
-                        absRoot = curRoot.getRightJoin();
-                    }
-                    numElements--;
-                    return true;
-                }
-            } else if (e.compareTo(curRoot.getData()) <= 0) {
-                if(curRoot.getLeftJoin() == null){          //empty LEFT slot found
+        Node nodeToRemove;
+        if(contains(e)){
+
+            nodeToRemove = findNode(e);
+
+            switch (childrenNumber(nodeToRemove)){
+                case 0:
+                    return removeWhenZeroChildren(nodeToRemove);
+                case 1:
+                    return removeWhenOneChildren(nodeToRemove);
+                case 2:
+                    return removeWhenTwoChildren(nodeToRemove);
+                default:
                     return false;
-                } else {
-                    curRoot = curRoot.getLeftJoin();
-                }
-            } else {
-                if(curRoot.getRightJoin() == null){         //empty RIGHT slot found
-                    return false;
-                } else {
-                    curRoot = curRoot.getRightJoin();
-                }
             }
+
+        } else {
+            return false;
         }
     }
 
