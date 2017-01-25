@@ -197,13 +197,32 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
         }
     }
 
-    private Node findMinimum(Node root){
+    public E findMinimum(){
+        Node minNode = findMinimum(absRoot);
+        return minNode.getData();
+    }
+
+    public Node findMinimum(Node root){
         Node curNode = root;
         while(curNode.getLeftJoin() != null){
             curNode = curNode.getLeftJoin();
         }
         return curNode;
     }
+
+    public E findMaximum(){
+        Node maxNode = findMaximum(absRoot);
+        return maxNode.getData();
+    }
+
+    public Node findMaximum(Node root){
+        Node curNode = root;
+        while(curNode.getRightJoin() != null){
+            curNode = curNode.getRightJoin();
+        }
+        return curNode;
+    }
+
 
     private int getChildrenSide(Node node){
         if(node.equals(node.getParentJoin().getLeftJoin()))return -1;
@@ -278,7 +297,16 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public boolean addAll(Collection c) {
-        return false;
+
+        Iterator it = c.iterator();
+
+        while(it.hasNext()){
+            if(!add((E)it.next()))
+                return false;
+        }
+
+        return true;
+
     }
 
     @Override
@@ -304,6 +332,31 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
     @Override
     public Object[] toArray(Object[] a) {
         throw new UnsupportedOperationException();
+    }
+
+    public E ceiling(E e){
+
+        Node nodeForCeiling = findNode(e);
+
+        if(e.compareTo(nodeForCeiling.getLeftJoin().getData()) == 0 ||
+                (nodeForCeiling.equals(absRoot) && nodeForCeiling.getRightJoin() == null)){
+            return nodeForCeiling.getData();
+        } else if (nodeForCeiling.getRightJoin() != null){
+            return nodeForCeiling.getRightJoin().getData();
+        } else {
+            return nodeForCeiling.getParentJoin().getData();
+        }
+    }
+
+    public E floor(E e){
+        Node nodeForFloor = findNode(e);
+
+        if(nodeForFloor.getLeftJoin() == null ||
+                e.compareTo(nodeForFloor.getLeftJoin().getData()) == 0){
+            return nodeForFloor.getData();
+        } else {
+            return findMaximum(nodeForFloor.getLeftJoin()).getData();
+        }
     }
 
     private Object[] traverseInOrder(Node startRoot) {

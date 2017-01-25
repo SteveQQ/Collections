@@ -4,6 +4,7 @@ import com.steveq.BST;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 
@@ -124,6 +125,69 @@ public class BSTTest {
         BST<Integer> bst2 = new BST<>();
         BST.Node node = bst2.findNode(10);
         assertEquals(null, node);
+    }
 
+    @Test
+    public void AllElementsFromCollectionAddedInCorrectOrder() throws Exception {
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(3);
+        testCollection.add(11);
+        testCollection.add(19);
+        testCollection.add(30);
+        bst.addAll(testCollection);
+
+        int[] test = new int[]{3, 5, 8, 10, 11, 12, 18, 19, 24, 27, 30};
+        assertArrayEquals(test, Arrays.stream(bst.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+    }
+
+    @Test
+    public void MinimumValueFound() throws Exception {
+        assertEquals(5, (int)bst.findMinimum());
+    }
+
+    @Test
+    public void FindMinimumReturnsRootWhenNoLowerValue() throws Exception {
+        assertEquals(5, (int)bst.findMinimum(bst.findNode(5)).getData());
+    }
+
+    @Test
+    public void ReturnedCelilingHasCorrectValue() throws Exception {
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(3);
+        testCollection.add(11);
+        testCollection.add(19);
+        testCollection.add(30);
+        bst.addAll(testCollection);
+
+        BST<Integer> bst2 = new BST<>();
+        bst2.add(10);
+        bst2.add(8);
+        bst2.add(5);
+
+        assertEquals(10, (int)bst.ceiling(8));
+        assertEquals(27, (int)bst.ceiling(24));
+        assertEquals(12, (int)bst.ceiling(10));
+        assertEquals(10, (int)bst2.ceiling(10));
+    }
+
+    @Test
+    public void ReturnedFloorHasCorrectValue() throws Exception {
+        ArrayList<Integer> testCollection = new ArrayList<>();
+        testCollection.add(3);
+        testCollection.add(11);
+        testCollection.add(19);
+        testCollection.add(30);
+        bst.addAll(testCollection);
+
+        BST<Integer> bst2 = new BST<>();
+        bst2.add(10);
+        bst2.add(12);
+        bst2.add(16);
+
+        assertEquals(5, (int)bst.floor(8));
+        assertEquals(19, (int)bst.floor(24));
+        assertEquals(8, (int)bst.floor(10));
+        assertEquals(27, (int)bst.floor(27));
+        assertEquals(10, (int)bst2.floor(10));
     }
 }
