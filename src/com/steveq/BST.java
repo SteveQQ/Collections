@@ -178,6 +178,37 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
         }
     }
 
+    public int height(){
+        return height(absRoot.getData());
+    }
+
+    public int height(E e){
+        Node curNode = findNode(e);
+
+        int result = 0;
+        while(true){
+            if(curNode.getLeftJoin() != null || curNode.getRightJoin() != null){
+                if (curNode.getLeftJoin() == null) {
+                    curNode = curNode.getRightJoin();
+                    result++;
+                } else if(curNode.getRightJoin() == null){
+                    curNode = curNode.getLeftJoin();
+                    result++;
+                } else {
+                    if(curNode.getLeftJoin().getSubtreeSize() >= curNode.getRightJoin().getSubtreeSize()){
+                        curNode = curNode.getLeftJoin();
+                        result++;
+                    } else {
+                        curNode = curNode.getRightJoin();
+                        result++;
+                    }
+                }
+            } else {
+                return result;
+            }
+        }
+    }
+
     public Node findNode(E e){
         return findNode(e, absRoot);
     }

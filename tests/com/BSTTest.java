@@ -241,4 +241,14 @@ public class BSTTest {
         assertEquals(4, bst.absRoot.getRightJoin().getSubtreeSize());
         assertEquals(1, bst.findNode(5).getSubtreeSize());
     }
+
+    @Test
+    public void TreeHeight() throws Exception {
+        assertEquals(3, bst.height());
+    }
+
+    @Test
+    public void RightDirectSubtree() throws Exception {
+        assertEquals(2, bst.height(12));
+    }
 }
