@@ -11,7 +11,7 @@ import java.util.Iterator;
 public class BST<E extends Comparable<E>> implements Collection<E>{
 
     private int numElements;
-    private Node absRoot;
+    public Node absRoot;
     private Node curRoot;
 
     public class Node implements Iterable{
@@ -224,16 +224,31 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
     }
 
 
-    private int getChildrenSide(Node node){
-        if(node.equals(node.getParentJoin().getLeftJoin()))return -1;
-            return 1;
+    private int getNodeSide(Node node){
+        if(node.getParentJoin() != null) {
+            if (node.equals(node.getParentJoin().getLeftJoin())) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            return 0;
+        }
     }
 
     private boolean removeWhenZeroChildren(Node nodeToRemove){
-        if(getChildrenSide(nodeToRemove) < 0){
-            nodeToRemove.getParentJoin().setLeftJoin(null);
-        } else {
-            nodeToRemove.getParentJoin().setRightJoin(null);
+        switch(getNodeSide(nodeToRemove)){
+            case -1:
+                nodeToRemove.getParentJoin().setLeftJoin(null);
+                break;
+            case 0:
+                absRoot = nodeToRemove.getRightJoin();
+                break;
+            case 1:
+                nodeToRemove.getParentJoin().setRightJoin(null);
+                break;
+            default:
+                break;
         }
         numElements--;
         return true;
@@ -241,16 +256,34 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     private boolean removeWhenOneChildren(Node nodeToRemove){
         if(nodeToRemove.getLeftJoin() != null){
-            if(getChildrenSide(nodeToRemove) <= 0){
-                nodeToRemove.getParentJoin().setLeftJoin(nodeToRemove.getLeftJoin());
-            } else {
-                nodeToRemove.getParentJoin().setRightJoin(nodeToRemove.getLeftJoin());
+            switch (getNodeSide(nodeToRemove)){
+                case -1:
+                    nodeToRemove.getParentJoin().setLeftJoin(nodeToRemove.getLeftJoin());
+                    break;
+                case 0:
+                    absRoot = nodeToRemove.getLeftJoin();
+                    absRoot.setParentJoin(null);
+                    break;
+                case 1:
+                    nodeToRemove.getParentJoin().setRightJoin(nodeToRemove.getLeftJoin());
+                    break;
+                default:
+                    break;
             }
         } else {
-            if(getChildrenSide(nodeToRemove) <= 0){
+            switch (getNodeSide(nodeToRemove)){
+            case -1:
                 nodeToRemove.getParentJoin().setLeftJoin(nodeToRemove.getRightJoin());
-            } else {
+                break;
+            case 0:
+                absRoot = nodeToRemove.getRightJoin();
+                absRoot.setParentJoin(null);
+                break;
+            case 1:
                 nodeToRemove.getParentJoin().setRightJoin(nodeToRemove.getRightJoin());
+                break;
+            default:
+                break;
             }
         }
         numElements--;
@@ -311,7 +344,10 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
 
     @Override
     public void clear() {
-
+        Object[] elementsSet = toArray();
+        for(int i=0; i < elementsSet.length; i++){
+            remove(((Node)elementsSet[i]).getData());
+        }
     }
 
     @Override

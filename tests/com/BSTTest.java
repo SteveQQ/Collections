@@ -190,4 +190,31 @@ public class BSTTest {
         assertEquals(27, (int)bst.floor(27));
         assertEquals(10, (int)bst2.floor(10));
     }
+
+    @Test
+    public void SizeIsZeroAfterClearingBST() throws Exception {
+        bst.clear();
+        assertTrue(bst.size() == 0);
+    }
+
+    @Test
+    public void AbsRootNullAfterClear() throws Exception {
+        bst.clear();
+
+        assertTrue(bst.absRoot == null);
+    }
+
+    @Test
+    public void RemoveWhenThereIsOnlyOneElement() throws Exception {
+        BST<Integer> bst2 = new BST<>();
+        bst2.add(19);
+        bst2.remove(19);
+        assertTrue(bst2.absRoot == null);
+        assertEquals(0, bst2.size());
+    }
+
+    @Test
+    public void RemoveNotExistingElementReturnFalse() throws Exception {
+        assertEquals(false, bst.remove(88));
+    }
 }
