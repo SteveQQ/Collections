@@ -26,6 +26,17 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
             this.parentJoin = parent;
             this.leftJoin = null;
             this.rightJoin = null;
+            this.subtreeSize++;
+            recurseIncreaseSize(this.parentJoin);
+        }
+
+        public void recurseIncreaseSize(Node parent){
+            if(parent == null){
+                return;
+            }
+            recurseIncreaseSize(parent.getParentJoin());
+            parent.setSubtreeSize(parent.getSubtreeSize() + 1);
+            return;
         }
 
         public E getData() {
@@ -134,6 +145,7 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
         if(placeHolder == null){
             absRoot = new Node(e, null);
             numElements++;
+            absRoot.setSubtreeSize(1);
             return true;
         }
         if(placeHolder.getData().compareTo(e) == 0) {

@@ -217,4 +217,28 @@ public class BSTTest {
     public void RemoveNotExistingElementReturnFalse() throws Exception {
         assertEquals(false, bst.remove(88));
     }
+
+    @Test
+    public void AddThreeSameValuesToBST() throws Exception {
+        BST<Integer> bst2 = new BST<>();
+        bst2.add(10);
+        bst2.add(10);
+        bst2.add(10);
+        bst2.add(4);
+
+        int[] test = new int[]{4, 10, 10, 10};
+        assertArrayEquals(test, Arrays.stream(bst2.toArray()).mapToInt(o -> (int)((BST.Node)o).getData()).toArray());
+    }
+
+    @Test
+    public void RootSubtreeSizeValidation() throws Exception {
+        assertEquals(7, bst.absRoot.getSubtreeSize());
+    }
+
+    @Test
+    public void LeftAndRightSubtreeSizeValidation() throws Exception {
+        assertEquals(2, bst.absRoot.getLeftJoin().getSubtreeSize());
+        assertEquals(4, bst.absRoot.getRightJoin().getSubtreeSize());
+        assertEquals(1, bst.findNode(5).getSubtreeSize());
+    }
 }
