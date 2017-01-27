@@ -251,4 +251,16 @@ public class BSTTest {
     public void RightDirectSubtree() throws Exception {
         assertEquals(2, bst.height(12));
     }
+
+    @Test
+    public void DepthOfRoot() throws Exception {
+        assertEquals(0, bst.depth());
+
+    }
+
+    @Test
+    public void DepthOfFurtherLeaf() throws Exception {
+        assertEquals(3, bst.depth(27));
+
+    }
 }

@@ -209,6 +209,22 @@ public class BST<E extends Comparable<E>> implements Collection<E>{
         }
     }
 
+    public int depth(){
+        return depth(absRoot.getData());
+    }
+
+    public int depth(E e){
+        Node curNode = findNode(e);
+
+        int result = 0;
+        while(curNode.getParentJoin() != null){
+            curNode = curNode.getParentJoin();
+            result++;
+        }
+
+        return result;
+    }
+
     public Node findNode(E e){
         return findNode(e, absRoot);
     }
